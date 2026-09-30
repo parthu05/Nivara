@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nivara</title>
+  <style>
+    :root {
+      --bg: #eef3ef;
+      --ink: #1d2a24;
+      --muted: #5b6b63;
+      --card: #fbfcf9;
+      --line: #d5e0d8;
+      --accent: #2f6f5e;
+      --accent-soft: #dceee6;
+      --crisis: #7a2e2e;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(1200px 500px at 10% -10%,
+          #e3efe8 0%,
+          transparent 55%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 32px;
+    }
+
+    .auth-shell {
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    .auth-shell h1 {
+      margin: 0;
+      font-size: 2.35rem;
+      font-weight: 600;
+    }
+
+    .auth-panel {
+      margin-top: 26px;
+      padding: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 18px;
+      background: #edf2ee;
+      border-radius: 9px;
+    }
+
+    .auth-tabs button {
+      min-height: 40px;
+      padding: 8px;
+      color: var(--muted);
+      background: transparent;
+      border-radius: 7px;
+    }
+
+    .auth-tabs button[aria-pressed="true"] {
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 1px 3px #1d2a241c;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 14px;
+      font-family: system-ui, sans-serif;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .auth-submit {
+      min-height: 46px;
+      margin-top: 4px;
+    }
+
+    .auth-error {
+      min-height: 1.25em;
+      margin: 0;
+      color: var(--crisis);
+      font: 0.88rem/1.4 system-ui, sans-serif;
+    }
+
+    .auth-note {
+      color: var(--muted);
+      font: 0.85rem/1.5 system-ui, sans-serif;
+    }
+
+    header h1 {
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .banner {
+      margin: 18px 0;
+      padding: 12px 14px;
+      background: var(--accent-soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .banner strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--crisis);
+      font-size: 0.98rem;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .account-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font: 0.84rem system-ui, sans-serif;
+    }
+
+    .quiet-button {
+      min-height: 36px;
+      padding: 0 12px;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    #log {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      overflow-y: auto;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: white;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #f3f7f4;
+      border: 1px solid var(--line);
+    }
+
+    .crisis {
+      border-color: #e3c0c0;
+      background: #fff6f6;
+    }
+
+    form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      min-height: 52px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      background: var(--accent);
+      color: white;
+      border-radius: 12px;
+      padding: 0 18px;
+      font-family: system-ui, sans-serif;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .tools {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      align-items: center;
+    }
+
+    input[type="number"] {
+      width: 64px;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    @media (max-width: 520px) {
+      .app-header {
+        flex-direction: column;
+      }
+
+      .account-tools {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      #log {
+        min-height: 340px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="authView" class="auth-shell">
+    <header>
+      <h1>Nivara</h1>
+      <p class="sub">
+        A calm space to check in with yourself.
+      </p>
+    </header>
+    <section class="auth-panel" aria-label="Account access">
+      <div class="auth-tabs" role="tablist" aria-label="Account action">
+        <button type="button" id="loginTab" role="tab" aria-pressed="true">Sign in</button>
+        <button type="button" id="registerTab" role="tab" aria-pressed="false">Create account</button>
+      </div>
+      <form id="authForm" class="auth-form">
+        <label class="field">
+          Email
+          <input id="authEmail" type="email" autocomplete="email" required />
+        </label>
+        <label class="field">
+          Password
+          <input id="authPassword" type="password" minlength="10" maxlength="128" autocomplete="current-password"
+            required />
+        </label>
+        <label id="confirmField" class="field" hidden>
+          Confirm password
+          <input id="authConfirm" type="password" minlength="10" maxlength="128" autocomplete="new-password" />
+        </label>
+        <label id="countryField" class="field" hidden>
+          Country
+          <input id="authCountry" list="countryOptions" autocomplete="country-name"
+            placeholder="Start typing your country" />
+          <datalist id="countryOptions">
+            <option value="United States"></option>
+            <option value="Canada"></option>
+            <option value="United Kingdom"></option>
+            <option value="Ireland"></option>
+            <option value="Australia"></option>
+            <option value="India"></option>
+          </datalist>
+        </label>
+        <p id="authError" class="auth-error" role="alert"></p>
+        <button id="authSubmit" class="auth-submit" type="submit">Sign in</button>
+      </form>
+      <p class="auth-note">Nivara is a wellness companion, not therapy or emergency care.</p>
+    </section>
+  </main>
+
+  <main id="appView" hidden>
+    <header class="app-header">
+      <div>
+        <h1>Nivara</h1>
+        <p class="sub">A calm space to talk. Not therapy, diagnosis, or emergency care.</p>
+      </div>
+      <div class="account-tools">
+        <span id="accountEmail"></span>
+        <button type="button" class="quiet-button" id="logoutBtn">Sign out</button>
+      </div>
+    </header>
+    <div class="banner" role="region" aria-label="Crisis support">
+      <strong id="helplineHeading">Support in your country</strong>
+      <span id="helplineDetails"></span>
+      <span> · If you are in immediate danger, contact your local emergency services.</span>
+    </div>
+    <div id="log"></div>
+    <div class="tools">
+      <label>Mood 0–10
+        <input id="mood" type="number" min="0" max="10" step="1" value="5" /></label>
+      <button type="button" id="moodBtn">Log mood</button>
+    </div>
+    <form id="chatForm">
+      <textarea id="message" placeholder="What's on your mind?" required></textarea>
+      <button type="submit" id="send">Send</button>
+    </form>
+  </main>
+  <script>
+    const tokenKey = "nivara.token";
+    const log = document.getElementById("log");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("message");
+    const send = document.getElementById("send");
+    const authForm = document.getElementById("authForm");
+    const authError = document.getElementById("authError");
+    const authView = document.getElementById("authView");
+    const appView = document.getElementById("appView");
+    let authMode = "login";
+    let authToken = localStorage.getItem(tokenKey);
+    let greetingAdded = false;
+
+    function add(role, text, extraClass) {
+      const el = document.createElement("div");
+      el.className =
+        "msg " +
+        (role === "user" ? "user" : "bot") +
+        (extraClass ? " " + extraClass : "");
+      el.textContent = text;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const registering = mode === "register";
+      document.getElementById("loginTab").setAttribute("aria-pressed", String(!registering));
+      document.getElementById("registerTab").setAttribute("aria-pressed", String(registering));
+      document.getElementById("countryField").hidden = !registering;
+      document.getElementById("confirmField").hidden = !registering;
+      document.getElementById("authCountry").required = registering;
+      document.getElementById("authConfirm").required = registering;
+      document.getElementById("authPassword").autocomplete = registering ? "new-password" : "current-password";
+      document.getElementById("authSubmit").textContent = registering ? "Create account" : "Sign in";
+      authError.textContent = "";
+    }
+
+    function showApp(profile) {
+      authView.hidden = true;
+      appView.hidden = false;
+      document.getElementById("accountEmail").textContent = profile.email;
+      const helpline = profile.helpline;
+      const heading = document.getElementById("helplineHeading");
+      const details = document.getElementById("helplineDetails");
+      heading.textContent = helpline.verified
+        ? `${helpline.country}: ${helpline.name} · ${helpline.method} ${helpline.number}`
+        : `${helpline.country}: no verified number is listed here`;
+      details.textContent = helpline.verified ? "" : "Use this directory to find local support: ";
+      const existingLink = document.getElementById("helplineLink");
+      if (existingLink) existingLink.remove();
+      const link = document.createElement("a");
+      link.id = "helplineLink";
+      link.href = helpline.url;
+      link.target = "_blank";
+      link.rel = "noreferrer";
+      link.textContent = helpline.verified ? "Official helpline" : "Find A Helpline";
+      details.append(" ", link);
+      if (!greetingAdded) {
+        add("bot", "Hi, I'm Nivara. You can talk about stress, sleep, or just how the day felt. I can also save a journal note or a mood score if you ask.");
+        greetingAdded = true;
+      }
+    }
+
+    async function apiFetch(url, options = {}) {
+      const headers = new Headers(options.headers || {});
+      headers.set("Authorization", `Bearer ${authToken}`);
+      if (options.body) headers.set("Content-Type", "application/json");
+      const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        authToken = null;
+        localStorage.removeItem(tokenKey);
+        appView.hidden = true;
+        authView.hidden = false;
+        setAuthMode("login");
+        authError.textContent = "Your session ended. Sign in again to continue.";
+      }
+      return response;
+    }
+
+    document.getElementById("loginTab").addEventListener("click", () => setAuthMode("login"));
+    document.getElementById("registerTab").addEventListener("click", () => setAuthMode("register"));
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      authError.textContent = "";
+      const registering = authMode === "register";
+      const password = document.getElementById("authPassword").value;
+      if (registering && password !== document.getElementById("authConfirm").value) {
+        authError.textContent = "The passwords do not match.";
+        return;
+      }
+      const button = document.getElementById("authSubmit");
+      button.disabled = true;
+      try {
+        const response = await fetch(`/api/auth/${registering ? "register" : "login"}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("authEmail").value,
+            password,
+            ...(registering ? { country: document.getElementById("authCountry").value } : {}),
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const detail = Array.isArray(data.detail) ? data.detail[0]?.msg : data.detail;
+          throw new Error(detail || "Could not sign in. Please try again.");
+        }
+        authToken = data.token;
+        localStorage.setItem(tokenKey, authToken);
+        showApp(data);
+        authForm.reset();
+      } catch (error) {
+        authError.textContent = error.message || "The server could not be reached.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        await apiFetch("/api/auth/logout", { method: "POST" });
+      } finally {
+        authToken = null;
+        localStorage.removeItem(tokenKey);
+        appView.hidden = true;
+        authView.hidden = false;
+        setAuthMode("login");
+      }
+    });
+
+    async function restoreSession() {
+      if (!authToken) return;
+      try {
+        const response = await apiFetch("/api/auth/me");
+        if (response.ok) showApp(await response.json());
+      } catch {
+        authError.textContent = "The server could not be reached. Try signing in again.";
+      }
+    }
+    restoreSession();
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+      add("user", message);
+      input.value = "";
+      send.disabled = true;
+      try {
+        const res = await apiFetch("/api/chat", {
+          method: "POST",
+          body: JSON.stringify({ message }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          add(
+            "bot",
+            data.detail ||
+            "The model is not reachable yet. Start Ollama and try again.",
+          );
+        } else {
+          add(
+            "bot",
+            data.reply,
+            data.safety_label === "crisis" ? "crisis" : "",
+          );
+        }
+      } catch {
+        add("bot", "I couldn't reach the server.");
+      } finally {
+        send.disabled = false;
+        input.focus();
+      }
+    });
+
+    document.getElementById("moodBtn").addEventListener("click", async () => {
+      const score = Number(document.getElementById("mood").value);
+      const res = await apiFetch("/api/mood", {
+        method: "POST",
+        body: JSON.stringify({
+          score,
+          label: "check-in",
+        }),
+      });
+      const data = await res.json();
+      add("bot", data.message || "Mood saved.");
+    });
+  </script>
+</body>
+
+</html>
