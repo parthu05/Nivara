@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_chat_model: str = "llama3.2"
     ollama_embed_model: str = "nomic-embed-text"
+    ollama_keep_alive: str = "30m"
 
     openai_base_url: str = "https://api.openai.com/v1"
     openai_api_key: str = ""

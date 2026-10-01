@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -18,14 +19,21 @@ from app.rag.retriever import ingest_knowledge_base
 FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
 
 
+async def _ingest_knowledge_base() -> None:
+    try:
+        await asyncio.to_thread(ingest_knowledge_base)
+    except Exception as exc:
+        print(f"[nivara] knowledge ingest skipped: {exc}")
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     init_db()
+    ingest_task = asyncio.create_task(_ingest_knowledge_base())
     try:
-        ingest_knowledge_base()
-    except Exception as exc:
-        print(f"[nivara] knowledge ingest skipped: {exc}")
-    yield
+        yield
+    finally:
+        ingest_task.cancel()
 
 
 app = FastAPI(

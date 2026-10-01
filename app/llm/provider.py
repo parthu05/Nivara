@@ -26,16 +26,29 @@ class LLMProvider:
             )
 
     def chat(self, messages: list[dict[str, str]], temperature: float = 0.4, max_tokens: int = 700) -> str:
+        options = (
+            {"extra_body": {"keep_alive": settings.ollama_keep_alive}}
+            if self.provider == "ollama"
+            else {}
+        )
         response = self.client.chat.completions.create(
             model=self.chat_model,
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
+            **options,
         )
         return (response.choices[0].message.content or "").strip()
 
     def embed(self, texts: list[str]) -> list[list[float]]:
-        response = self.client.embeddings.create(model=self.embed_model, input=texts)
+        options = (
+            {"extra_body": {"keep_alive": settings.ollama_keep_alive}}
+            if self.provider == "ollama"
+            else {}
+        )
+        response = self.client.embeddings.create(
+            model=self.embed_model, input=texts, **options
+        )
         ordered = sorted(response.data, key=lambda item: item.index)
         return [item.embedding for item in ordered]
 

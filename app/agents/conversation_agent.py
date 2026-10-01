@@ -10,6 +10,7 @@ SYSTEM_PROMPT = """You are Nivara, a warm, grounded mental-wellness companion.
 Rules:
 - You are not a therapist, doctor, or crisis service. Do not diagnose or prescribe.
 - Be concise, human, and specific. Prefer one small next step over a lecture.
+- Keep replies to 2-4 sentences and about 60 words unless the user asks for detail.
 - Use retrieved knowledge when it helps; do not invent clinical facts.
 - If the user may be in crisis, encourage emergency help and 988 / IASP. Never provide harm instructions.
 - Reflect feelings first, then ask at most one gentle question.
@@ -48,7 +49,7 @@ def conversation_node(state: dict) -> dict:
     messages.extend(history)
     messages.append({"role": "user", "content": user_message})
 
-    reply = llm.chat(messages)
+    reply = llm.chat(messages, max_tokens=180)
     if tool_notes and tool_notes not in reply:
         reply = f"{reply}\n\n_{tool_notes}_"
     return {"reply": reply}

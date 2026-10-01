@@ -7,7 +7,6 @@ from langgraph.graph import END, START, StateGraph
 from app.agents.conversation_agent import conversation_node
 from app.agents.safety_agent import safety_node
 from app.agents.wellness_agent import wellness_node
-from app.memory.long_term import maybe_update_profile
 from app.memory.short_term import add_message, ensure_session
 
 
@@ -67,8 +66,6 @@ def run_turn(session_id: str, user_message: str) -> dict:
     )
     reply = result.get("reply") or "I'm here, but I could not form a response just then. Please try again."
     add_message(session_id, "assistant", reply)
-    if result.get("safety_label") != "crisis":
-        maybe_update_profile(session_id, user_message, reply)
     return {
         "reply": reply,
         "safety_label": result.get("safety_label", "ok"),

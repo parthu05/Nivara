@@ -29,16 +29,17 @@ def _collection():
 
 def ingest_knowledge_base(force: bool = False) -> int:
     collection = _collection()
-    if collection.count() > 0 and not force:
-        return collection.count()
     docs = load_knowledge_documents()
     if not docs:
         return 0
-    if force and collection.count() > 0:
-        collection.delete(ids=[item["id"] for item in collection.get()["ids"] or []])
+    existing_ids = set(collection.get(include=[]).get("ids") or [])
+    if force and existing_ids:
+        collection.delete(ids=list(existing_ids))
+        existing_ids.clear()
+    docs_to_upsert = [doc for doc in docs if doc["id"] not in existing_ids]
     batch = 16
-    for i in range(0, len(docs), batch):
-        part = docs[i : i + batch]
+    for i in range(0, len(docs_to_upsert), batch):
+        part = docs_to_upsert[i : i + batch]
         collection.upsert(
             ids=[d["id"] for d in part],
             documents=[d["text"] for d in part],
