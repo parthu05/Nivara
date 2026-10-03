@@ -31,12 +31,16 @@ def chat(
     try:
         result = run_turn(user.session_id, payload.message)
     except Exception as exc:
+        detail = str(exc)
+        if not detail:
+            detail = (
+                "Google Gemini is unavailable. If you want to use Ollama instead, install it from "
+                "https://ollama.com/download, start `ollama serve`, then run `ollama pull llama3.2` "
+                "and `ollama pull nomic-embed-text`."
+            )
         raise HTTPException(
             status_code=503,
-            detail=(
-                "The language model is unavailable. Start Ollama locally "
-                f"(or switch LLM_PROVIDER) and retry. ({exc.__class__.__name__})"
-            ),
+            detail=f"{detail}",
         ) from exc
     if result.get("safety_label") != "crisis":
         background_tasks.add_task(

@@ -8,12 +8,17 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=str(ROOT_DIR / ".env"), extra="ignore")
 
-    llm_provider: str = "ollama"
+    llm_provider: str = "gemini"
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_chat_model: str = "llama3.2"
     ollama_embed_model: str = "nomic-embed-text"
     ollama_keep_alive: str = "30m"
+
+    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+    gemini_api_key: str = ""
+    gemini_chat_model: str = "gemini-2.5-flash"
+    gemini_embed_model: str = "text-embedding-004"
 
     openai_base_url: str = "https://api.openai.com/v1"
     openai_api_key: str = ""
